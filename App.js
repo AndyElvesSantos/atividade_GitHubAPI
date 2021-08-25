@@ -5,7 +5,8 @@ const Tela = styled.View`
   flex : 1;
 `
 const Cabecalho = styled.View`
-  background-color : #20232a;
+  margin-top: 20px;
+  background-color : #7FFFD4;
   height: 65px;
   padding: 0 30px;
   padding-top: 20px;
@@ -16,8 +17,9 @@ const Cabecalho = styled.View`
 
 const Busca = styled.TextInput`
   color : #fff;
-  font-size : 30px;
+  font-size : 20px;
 `
+
 const Botao = styled.TouchableOpacity`
   
 `
@@ -31,9 +33,8 @@ const Destaque = styled.View`
   
 `
 const Poster = styled.Image`
-  width: 300px;
-  height: 400px;
-  
+  width: 0px;
+  height: 0px;
 `
 const Info = styled.View`
   backgound-color: #fff;
@@ -75,15 +76,42 @@ const Linha3 = styled.View`
 
 
 export default function App () {
+  const [user, alteraNome] = useState('')
+  const [git, gitUsuario] = useState({})
+
+  const buscarUser = async () => {
+    const requisicao = await fetch(`https://api.github.com/users/${user}`)
+    const resposta = await requisicao.json()
+    gitUsuario(resposta);   
+  };
+
 
   return(
     <Tela>
       <Cabecalho>
-        <Busca placeholder="Pesquisar..."/>  
-        <Botao activeOpacity={0.3}>
-          <BuscarImagem/> 
+        <Busca placeholder="Buscar Usuario..." value={user} onChangeText={ (git) => {alteraNome(git)}}/>  
+        <Botao activeOpacity={0.3} onPress={buscarUser} >
+          <BuscarImagem source={require('./assets/icons8-search-24.png')}/> 
         </Botao>
       </Cabecalho> 
+      
+      <Info>
+        <Titulo>{git.name}</Titulo>
+        <Linha1>
+          <Texto>Login: {git.login}</Texto>
+          <Texto>Followers: {git.followers_url}</Texto>
+          <Texto>Following: {git.following_url}</Texto>
+        </Linha1>
+
+        <Linha2>
+          <Texto>Bio: {git.bio}</Texto>
+          <Texto>Email: {git.email}</Texto>
+        </Linha2>
+
+        <Linha3>
+          <Texto>Repositórios: {git.public_repo}</Texto>
+        </Linha3>
+      </Info>
     </Tela>
 
   );
